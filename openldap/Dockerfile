@@ -12,7 +12,12 @@ RUN apt-get update && \
 
 RUN mv /etc/ldap /etc/ldap.dist
 
+RUN apt-get install -y ldap-account-manager
+RUN service apache2 start
+
 EXPOSE 389
+
+EXPOSE 80
 
 VOLUME ["/etc/ldap", "/var/lib/ldap"]
 
