@@ -6,14 +6,15 @@ ENV OPENLDAP_VERSION 2.4.40
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
-        slapd=${OPENLDAP_VERSION}* && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+        slapd=${OPENLDAP_VERSION}* 
 
 RUN mv /etc/ldap /etc/ldap.dist
 
 RUN apt-get install -y ldap-account-manager
 RUN service apache2 start
+
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 EXPOSE 389
 
