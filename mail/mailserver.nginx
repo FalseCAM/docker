@@ -1,0 +1,51 @@
+server {
+	server_name mail.domain.tld;
+	listen 443 ssl;
+	listen [::]:443 ssl;
+	ssl on;
+	ssl_certificate         /etc/ssl/mail.domain.tld.cer;
+	ssl_certificate_key     /etc/ssl/mail.domain.tld.key;
+	# Einige Optionen nach Bettercrypto
+	ssl_prefer_server_ciphers on;
+	ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+	ssl_ciphers 'EDH+CAMELLIA:EDH+aRSA:EECDH+aRSA+AESGCM:EECDH+aRSA+SHA384:EECDH+aRSA+SHA256:EECDH:+CAMELLIA256:+AES256:+CAMELLIA128:+AES128:+SSLv3:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!DSS:!RC4:!SEED:!ECDSA:CAMELLIA256-SHA:AES256-SHA:CAMELLIA128-SHA:AES128-SHA';
+	add_header Strict-Transport-Security max-age=15768000;
+	ssl_session_cache shared:SSL:5m;
+	ssl_session_timeout 30m;
+	client_max_body_size 0;
+	root /var/www/html;
+	index index.html index.htm index.php;
+	location / {
+		try_files $uri $uri/ index.php;
+	}
+	# Zugriff auf Roundcube Logs, sollte von außerhalb nicht möglich sein
+	location ~ ^/webmail/logs/ {
+		deny all;
+	}
+	location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
+		fastcgi_read_timeout 630;
+		fastcgi_keep_conn on;
+		# Dient ViMbAdmin, da Nginx keine htaccess-Datei einlesen wird
+		fastcgi_param APP_ENV production;
+		fastcgi_pass unix:/var/run/php5-fpm.sock;
+	}
+	# Können sensible Daten enthalten, Nginx verwertet sie nicht
+	location ~ /\.ht {
+		deny all;
+	}
+	location = /favicon.ico {
+		log_not_found off;
+		access_log off;
+	}
+	# Keine Notwendigkeit
+	location = /robots.txt {
+		deny all;
+		log_not_found off;
+		access_log off;
+	}
+	location /admin {
+		# Rewrite fix für ViMbAdmin
+		try_files $uri $uri/ /admin/index.php?$args;
+	}
+}
