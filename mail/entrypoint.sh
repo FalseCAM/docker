@@ -1,5 +1,4 @@
 #!/bin/bash
-service ssh start
 
 # config php
 sed -i "s/^;date.timezone =$/date.timezone = \"Europe\/Berlin\"/" /etc/php5/fpm/php.ini
@@ -21,15 +20,15 @@ systemctl reload nginx.service
 debconf-set-selections <<< 'mysql-server mysql-server/root_password password changeme'
 debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password changeme'
 apt-get -y install mysql-server
-
+service mysql start
 # ViMbAdmin: Datenbankname vimbadmin, Username vimbadmin
-mysql --defaults-file=/etc/mysql/debian.cnf -e "CREATE DATABASE vimbadmin; GRANT ALL ON vimbadmin.* TO 'vimbadmin'@'localhost' IDENTIFIED BY 'changeme'; FLUSH PRIVILEGES;"
+mysql -uroot -pchangeme -e "CREATE DATABASE vimbadmin; GRANT ALL ON vimbadmin.* TO 'vimbadmin'@'localhost' IDENTIFIED BY 'changeme'; FLUSH PRIVILEGES;"
 # Roundcube: Datenbankname roundcube, Username roundcube
-mysql --defaults-file=/etc/mysql/debian.cnf -e "CREATE USER 'roundcube'@'localhost' IDENTIFIED BY 'changeme';"
-mysql --defaults-file=/etc/mysql/debian.cnf -e "CREATE DATABASE roundcube; GRANT ALL ON roundcube.* TO 'roundcube'@'localhost' IDENTIFIED BY 'changeme'; FLUSH PRIVILEGES;"
+mysql -uroot -pchangeme -e "CREATE USER 'roundcube'@'localhost' IDENTIFIED BY 'changeme';"
+mysql -uroot -pchangeme -e "CREATE DATABASE roundcube; GRANT ALL ON roundcube.* TO 'roundcube'@'localhost' IDENTIFIED BY 'changeme'; FLUSH PRIVILEGES;"
 
 # config roundcube
-mysql --defaults-file=/etc/mysql/debian.cnf roundcube < /var/www/html/webmail/SQL/mysql.initial.sql
+mysql -uroot -pchangeme roundcube < /var/www/html/webmail/SQL/mysql.initial.sql
 chown -R www-data: /var/www/html
 
 # config postfix
@@ -39,8 +38,9 @@ sed -i 's/mail.domain.tld/'"`hostname -f`"'/g' /etc/postfix/main.cf
 sed -i 's/mail.domain.tld/'"`hostname -f`"'/g' /etc/dovecot/dovecot.conf
 
 # start services
-systemctl start php5-fpm.service
-systemctl start nginx.service
+service mysql start
+service php5-fpm start
+service nginx start
 
 /bin/bash
 
