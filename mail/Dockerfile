@@ -45,6 +45,7 @@ COPY postfix-mysql-virtual_mailbox_maps.cf /etc/postfix/mysql/postfix-mysql-virt
 COPY postfix-mysql-virtual_transport_maps.cf /etc/postfix/mysql/postfix-mysql-virtual_transport_maps.cf
 COPY dovecot.conf /etc/dovecot/dovecot.conf
 COPY dovecot-mysql.conf /etc/dovecot/dovecot-mysql.conf
+COPY dovecot-ldap.conf /etc/dovecot/dovecot-ldap.conf
 COPY config.inc.php /var/www/html/webmail/config/config.inc.php
 
 ENTRYPOINT ["/entrypoint.sh"]
