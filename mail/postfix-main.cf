@@ -76,7 +76,7 @@ smtpd_data_restrictions =
    permit
 
 # Eine Art Tabelle mit vorhanden Identitäten und ihren Zugehörigkeiten
-smtpd_sender_login_maps = proxy:mysql:/etc/postfix/mysql/postfix-mysql-virtual_alias_maps.cf
+smtpd_sender_login_maps = proxy:mysql:/etc/postfix/mysql/postfix-mysql-virtual_alias_maps.cf proxy:ldap:/etc/postfix/ldap/postfix-ldap-sender_login_maps.cf
 
 # Certificates
 smtp_tls_cert_file = /etc/ssl/mail.domain.tld.cer
@@ -157,10 +157,10 @@ virtual_mailbox_base = /
 virtual_mailbox_domains = proxy:mysql:/etc/postfix/mysql/postfix-mysql-virtual_domains_maps.cf
 
 # Alias specific mail addresses or domains to other local or remote address.
-virtual_alias_maps = proxy:mysql:/etc/postfix/mysql/postfix-mysql-virtual_alias_maps.cf
+virtual_alias_maps = proxy:mysql:/etc/postfix/mysql/postfix-mysql-virtual_alias_maps.cf proxy:ldap:/etc/postfix/ldap/postfix-ldap-virtual_group_maps.cf
 
 # Specify a left-hand side of "@domain.tld" to match any user in the specified domain
-virtual_mailbox_maps = proxy:mysql:/etc/postfix/mysql/postfix-mysql-virtual_mailbox_maps.cf
+virtual_mailbox_maps = proxy:mysql:/etc/postfix/mysql/postfix-mysql-virtual_mailbox_maps.cf proxy:ldap:/etc/postfix/ldap/postfix-ldap-virtual_mailbox_maps.cf
 
 # The minimum user ID value that the virtual delivery agent accepts
 virtual_minimum_uid = 5000

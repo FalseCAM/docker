@@ -1,0 +1,14 @@
+server_host     = openldap
+server_port     = 389
+version         = 3
+bind            = yes
+start_tls       = no
+bind_dn         = CN=admin,DC=domain,DC=tld
+bind_pw         = changeme
+search_base     = OU=People,DC=domain,DC=tld
+scope           = sub
+query_filter    = (&(objectClass=posixGroup)(mail=%s))
+leaf_result_attribute = mail
+special_result_attribute = member
+result_attribute= mail
+debuglevel      = 0
