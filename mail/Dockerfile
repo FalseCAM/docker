@@ -4,13 +4,13 @@ MAINTAINER falsecam
 
 RUN export DEBIAN_FRONTEND="noninteractive"
 RUN apt-get update 
-RUN apt-get -y install debconf-utils nginx-full php-auth-sasl php-http-request php-mail \
+RUN apt-get -y install debconf-utils rsyslog nginx-full php-auth-sasl php-http-request php-mail \
 	php-mail-mime php-mail-mimedecode php-net-dime php-net-smtp php-net-socket php-net-url \
 	php-pear php-soap php5 php5-cli php5-common php5-curl php5-fpm php5-gd php5-imap \
 	php-apc php5-intl php5-mcrypt php5-mysql libawl-php php5-xmlrpc mysql-client ca-certificates \
 	git curl wget vim openssh-server \
 	clamav clamav-daemon amavisd-new spamassassin \
-	arj bzip2 cabextract cpio file gzip nomarch pax unzip zoo zip zoo
+	arj bzip2 cabextract cpio file gzip nomarch pax unzip zoo zip
 
 RUN echo "postfix postfix/main_mailer_type select No configuration" | debconf-set-selections
 RUN apt-get install -y postfix postfix-ldap postfix-pcre
@@ -26,10 +26,22 @@ RUN groupadd -g 5000 vmail && \
 
 RUN echo "@bypass_virus_checks_maps = (\%bypass_virus_checks, \@bypass_virus_checks_acl, \$bypass_virus_checks_re);" >> /etc/amavis/conf.d/15-content_filter_mode
 RUN echo "@bypass_spam_checks_maps = (\%bypass_spam_checks, \@bypass_spam_checks_acl, \$bypass_spam_checks_re);" >> /etc/amavis/conf.d/15-content_filter_mode
+RUN freshclam
+
+RUN debconf-set-selections <<< 'mysql-server mysql-server/root_password password changeme' && \
+	debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password changeme' && \
+	apt-get -y install mysql-server && \
+	service mysql start && \
+	mysql -uroot -pchangeme -e "CREATE DATABASE vimbadmin; GRANT ALL ON vimbadmin.* TO 'vimbadmin'@'localhost' IDENTIFIED BY 'changeme'; FLUSH PRIVILEGES;" && \
+	mysql -uroot -pchangeme -e "CREATE USER 'roundcube'@'localhost' IDENTIFIED BY 'changeme';" \
+	mysql -uroot -pchangeme -e "CREATE DATABASE roundcube; GRANT ALL ON roundcube.* TO 'roundcube'@'localhost' IDENTIFIED BY 'changeme'; FLUSH PRIVILEGES;"
 
 WORKDIR /var/www/html
 RUN wget --content-disposition -O - http://sourceforge.net/projects/roundcubemail/files/latest/download | tar xfvz -
 RUN mv roundcubemail-* webmail
+
+RUN mysql -uroot -pchangeme roundcube < /var/www/html/webmail/SQL/mysql.initial.sql && \
+	chown -R www-data: /var/www/html
 
 VOLUME /etc/postfix
 VOLUME /var/vmail

@@ -16,21 +16,6 @@ sed -i 's/mail.domain.tld/'"`hostname -f`"'/g' /etc/nginx/sites-available/mailse
 ln -s /etc/nginx/sites-available/mailserver /etc/nginx/sites-enabled/
 systemctl reload nginx.service
 
-# config mysql
-debconf-set-selections <<< 'mysql-server mysql-server/root_password password changeme'
-debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password changeme'
-apt-get -y install mysql-server
-service mysql start
-# ViMbAdmin: Datenbankname vimbadmin, Username vimbadmin
-mysql -uroot -pchangeme -e "CREATE DATABASE vimbadmin; GRANT ALL ON vimbadmin.* TO 'vimbadmin'@'localhost' IDENTIFIED BY 'changeme'; FLUSH PRIVILEGES;"
-# Roundcube: Datenbankname roundcube, Username roundcube
-mysql -uroot -pchangeme -e "CREATE USER 'roundcube'@'localhost' IDENTIFIED BY 'changeme';"
-mysql -uroot -pchangeme -e "CREATE DATABASE roundcube; GRANT ALL ON roundcube.* TO 'roundcube'@'localhost' IDENTIFIED BY 'changeme'; FLUSH PRIVILEGES;"
-
-# config roundcube
-mysql -uroot -pchangeme roundcube < /var/www/html/webmail/SQL/mysql.initial.sql
-chown -R www-data: /var/www/html
-
 # config postfix
 sed -i 's/mail.domain.tld/'"`hostname -f`"'/g' /etc/postfix/main.cf
 
