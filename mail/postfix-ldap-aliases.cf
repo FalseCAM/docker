@@ -1,0 +1,9 @@
+server_host     = openldap
+server_port     = 389
+version         = 3
+bind            = yes
+bind_dn         = CN=admin,DC=domain,DC=tld
+bind_pw         = changeme
+search_base     = OU=People,DC=domain,DC=tld
+query_filter    = (&(|(mail=%s)(uid=%u))(objectclass=posixAccount))
+result_attribute= uid

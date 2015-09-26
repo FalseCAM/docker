@@ -12,14 +12,14 @@ RUN apt-get -y install debconf-utils rsyslog nginx-full php-auth-sasl php-http-r
 	clamav clamav-daemon amavisd-new spamassassin \
 	arj bzip2 cabextract cpio file gzip nomarch pax unzip zoo zip
 
-RUN echo "postfix postfix/main_mailer_type select No configuration" | debconf-set-selections
-RUN apt-get install -y postfix postfix-ldap postfix-pcre
+RUN echo "postfix postfix/main_mailer_type select No configuration" | debconf-set-selections && \
+	apt-get install -y postfix postfix-ldap postfix-pcre
 
 COPY mailserver.nginx /etc/nginx/sites-available/mailserver
 RUN ln -s /etc/nginx/sites-available/mailserver /etc/nginx/sites-enabled/
 
-RUN apt-get install dovecot-common dovecot-core dovecot-imapd dovecot-lmtpd dovecot-managesieved dovecot-sieve dovecot-mysql
-RUN groupadd -g 5000 vmail && \
+RUN apt-get install dovecot-common dovecot-core dovecot-imapd dovecot-lmtpd dovecot-managesieved dovecot-sieve dovecot-mysql dovecot-ldap && \
+	groupadd -g 5000 vmail && \ 
 	useradd -g vmail -u 5000 vmail -d /var/vmail && \
 	mkdir /var/vmail && \
 	chown -R vmail: /var/vmail/
@@ -67,6 +67,7 @@ COPY postfix-mysql-virtual_transport_maps.cf /etc/postfix/mysql/postfix-mysql-vi
 COPY postfix-ldap-sender_login_maps.cf /etc/postfix/ldap/postfix-ldap-sender_login_maps.cf
 COPY postfix-ldap-virtual_mailbox_maps.cf /etc/postfix/ldap/postfix-ldap-virtual_mailbox_maps.cf
 COPY postfix-ldap-virtual_group_maps.cf /etc/postfix/ldap/postfix-ldap-virtual_group_maps.cf
+COPY postfix-ldap-aliases.cf /etc/postfix/ldap/postfix-ldap-aliases.cf
 
 COPY dovecot.conf /etc/dovecot/dovecot.conf
 COPY dovecot-mysql.conf /etc/dovecot/dovecot-mysql.conf

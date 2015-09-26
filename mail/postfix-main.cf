@@ -1,5 +1,5 @@
 # SMTPd greeting banner: You MUST specify $myhostname at the start of the text. This is required by the SMTP protocol.
-smtpd_banner = $myhostname
+smtpd_banner = "$myhostname domain.tld ip-8.8.8.8.domain.tld ESMTP $mail_name (Debian/GNU)"
 
 # Disable local biff service
 biff = no
@@ -15,7 +15,7 @@ html_directory = /usr/share/doc/postfix/html
 
 # Certificates
 smtpd_tls_cert_file = /etc/ssl/mail.domain.tld.cer
-smtpd_tls_key_file = /etc/ssl/mail.domain.tld.key
+smtpd_tls_key_file = /etc/ssl/mail.domain.tld.key/
 
 # Opportunistic TLS. TLS auth only.
 smtpd_tls_security_level=may
@@ -76,7 +76,8 @@ smtpd_data_restrictions =
    permit
 
 # Eine Art Tabelle mit vorhanden Identitäten und ihren Zugehörigkeiten
-smtpd_sender_login_maps = proxy:mysql:/etc/postfix/mysql/postfix-mysql-virtual_alias_maps.cf proxy:ldap:/etc/postfix/ldap/postfix-ldap-sender_login_maps.cf
+smtpd_sender_login_maps = proxy:ldap:/etc/postfix/ldap/postfix-ldap-sender_login_maps.cf
+# proxy:mysql:/etc/postfix/mysql/postfix-mysql-virtual_alias_maps.cf 
 
 # Certificates
 smtp_tls_cert_file = /etc/ssl/mail.domain.tld.cer
@@ -92,17 +93,17 @@ smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
 tls_high_cipherlist=EDH+CAMELLIA:EDH+aRSA:EECDH+aRSA+AESGCM:EECDH+aRSA+SHA384:EECDH+aRSA+SHA256:EECDH:+CAMELLIA256:+AES256:+CAMELLIA128:+AES128:+SSLv3:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!DSS:!RC4:!SEED:!ECDSA:CAMELLIA256-SHA:AES256-SHA:CAMELLIA128-SHA:AES128-SHA
 
 # Use the FQDN for the local hostname!
-myhostname = mail.domain.tld
+myhostname = domain.tld
 
 # Alias maps and database for -local- delivery only
 alias_maps = hash:/etc/aliases
-alias_database = hash:/etc/aliases
+#alias_database = hash:/etc/aliases
 
 # The domain name that locally-posted mail appears to come from, and that locally posted mail is delivered to.
-myorigin = mail.domain.tld
+myorigin = domain.tld
 
 # The list of domains that are delivered via the -local- mail delivery transport. No external domains like "domain.tld" belong here! "mail.domain.tld" is fine.
-mydestination = mail.domain.tld, localhost
+mydestination = $myhostname, mail, localhost.localdomain, localhost, mail.domain.tld
 
 # We lookup MX records to send non-local mail, so this stays empty
 relayhost =
@@ -154,13 +155,16 @@ proxy_read_maps = $local_recipient_maps $mydestination $virtual_alias_maps $virt
 virtual_mailbox_base = /
 
 # THIS contains a list of domains we are the final destination for (unlike "mydestination").
-virtual_mailbox_domains = proxy:mysql:/etc/postfix/mysql/postfix-mysql-virtual_domains_maps.cf
+virtual_mailbox_domains =
+# proxy:mysql:/etc/postfix/mysql/postfix-mysql-virtual_domains_maps.cf
 
 # Alias specific mail addresses or domains to other local or remote address.
-virtual_alias_maps = proxy:mysql:/etc/postfix/mysql/postfix-mysql-virtual_alias_maps.cf proxy:ldap:/etc/postfix/ldap/postfix-ldap-virtual_group_maps.cf
+virtual_alias_maps = proxy:ldap:/etc/postfix/ldap/postfix-ldap-virtual_group_maps.cf
+# proxy:mysql:/etc/postfix/mysql/postfix-mysql-virtual_alias_maps.cf
 
 # Specify a left-hand side of "@domain.tld" to match any user in the specified domain
-virtual_mailbox_maps = proxy:mysql:/etc/postfix/mysql/postfix-mysql-virtual_mailbox_maps.cf proxy:ldap:/etc/postfix/ldap/postfix-ldap-virtual_mailbox_maps.cf
+virtual_mailbox_maps = proxy:ldap:/etc/postfix/ldap/postfix-ldap-virtual_mailbox_maps.cf
+# proxy:mysql:/etc/postfix/mysql/postfix-mysql-virtual_mailbox_maps.cf
 
 # The minimum user ID value that the virtual delivery agent accepts
 virtual_minimum_uid = 5000
@@ -172,7 +176,8 @@ virtual_gid_maps = static:5000
 # The default mail delivery transport and next-hop destination for final delivery to domains listed with "virtual_mailbox_domains"
 virtual_transport = lmtps:unix:private/dovecot-lmtp
 
-transport_maps = mysql:/etc/postfix/mysql/postfix-mysql-virtual_transport_maps.cf
+transport_maps =
+# mysql:/etc/postfix/mysql/postfix-mysql-virtual_transport_maps.cf
 
 ## Queue configuration
 # Consider a message as undeliverable, when delivery fails with a temporary error, and the time in the queue has reached this limit.
