@@ -97,7 +97,7 @@ myhostname = domain.tld
 
 # Alias maps and database for -local- delivery only
 alias_maps = hash:/etc/aliases
-#alias_database = hash:/etc/aliases
+alias_database = hash:/etc/aliases
 
 # The domain name that locally-posted mail appears to come from, and that locally posted mail is delivered to.
 myorigin = domain.tld
