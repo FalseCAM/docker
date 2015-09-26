@@ -38,25 +38,14 @@ VOLUME /etc/dovecot
 
 WORKDIR /
 
-RUN curl -sS https://getcomposer.org/installer | php
-RUN mv composer.phar /usr/local/bin/composer
-RUN composer create-project opensolutions/vimbadmin /srv/vimbadmin -s dev -n --keep-vcs
-RUN chown -R www-data: /srv/vimbadmin/public && chown -R www-data: /srv/vimbadmin/var
-RUN ln -s /srv/vimbadmin/public/ /var/www/html/admin
-RUN cp /srv/vimbadmin/application/configs/application.ini.dist /srv/vimbadmin/application/configs/application.ini
-
 COPY entrypoint.sh /entrypoint.sh
 COPY postfix-main.cf /etc/postfix/main.cf
 COPY master.cf /etc/postfix/master.cf
-COPY postfix-mysql-virtual_alias_maps.cf /etc/postfix/mysql/postfix-mysql-virtual_alias_maps.cf
-COPY postfix-mysql-virtual_domains_maps.cf /etc/postfix/mysql/postfix-mysql-virtual_domains_maps.cf
-COPY postfix-mysql-virtual_mailbox_maps.cf /etc/postfix/mysql/postfix-mysql-virtual_mailbox_maps.cf
-COPY postfix-mysql-virtual_transport_maps.cf /etc/postfix/mysql/postfix-mysql-virtual_transport_maps.cf
 
-COPY postfix-ldap-sender_login_maps.cf /etc/postfix/ldap/postfix-ldap-sender_login_maps.cf
-COPY postfix-ldap-virtual_mailbox_maps.cf /etc/postfix/ldap/postfix-ldap-virtual_mailbox_maps.cf
-COPY postfix-ldap-virtual_group_maps.cf /etc/postfix/ldap/postfix-ldap-virtual_group_maps.cf
-COPY postfix-ldap-aliases.cf /etc/postfix/ldap/postfix-ldap-aliases.cf
+COPY postfix-ldap-sender_login_maps.cf /etc/postfix/postfix-ldap-sender_login_maps.cf
+COPY postfix-ldap-virtual_mailbox_maps.cf /etc/postfix/postfix-ldap-virtual_mailbox_maps.cf
+COPY postfix-ldap-virtual_group_maps.cf /etc/postfix/postfix-ldap-virtual_group_maps.cf
+COPY postfix-ldap-aliases.cf /etc/postfix/postfix-ldap-aliases.cf
 
 COPY dovecot.conf /etc/dovecot/dovecot.conf
 COPY dovecot-mysql.conf /etc/dovecot/dovecot-mysql.conf
