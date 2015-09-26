@@ -28,20 +28,9 @@ RUN echo "@bypass_virus_checks_maps = (\%bypass_virus_checks, \@bypass_virus_che
 RUN echo "@bypass_spam_checks_maps = (\%bypass_spam_checks, \@bypass_spam_checks_acl, \$bypass_spam_checks_re);" >> /etc/amavis/conf.d/15-content_filter_mode
 RUN freshclam
 
-RUN debconf-set-selections <<< 'mysql-server mysql-server/root_password password changeme' && \
-	debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password changeme' && \
-	apt-get -y install mysql-server && \
-	service mysql start && \
-	mysql -uroot -pchangeme -e "CREATE DATABASE vimbadmin; GRANT ALL ON vimbadmin.* TO 'vimbadmin'@'localhost' IDENTIFIED BY 'changeme'; FLUSH PRIVILEGES;" && \
-	mysql -uroot -pchangeme -e "CREATE USER 'roundcube'@'localhost' IDENTIFIED BY 'changeme';" \
-	mysql -uroot -pchangeme -e "CREATE DATABASE roundcube; GRANT ALL ON roundcube.* TO 'roundcube'@'localhost' IDENTIFIED BY 'changeme'; FLUSH PRIVILEGES;"
-
 WORKDIR /var/www/html
 RUN wget --content-disposition -O - http://sourceforge.net/projects/roundcubemail/files/latest/download | tar xfvz -
 RUN mv roundcubemail-* webmail
-
-RUN mysql -uroot -pchangeme roundcube < /var/www/html/webmail/SQL/mysql.initial.sql && \
-	chown -R www-data: /var/www/html
 
 VOLUME /etc/postfix
 VOLUME /var/vmail
