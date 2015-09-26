@@ -24,10 +24,8 @@ RUN groupadd -g 5000 vmail && \
 	mkdir /var/vmail && \
 	chown -R vmail: /var/vmail/
 
-RUN echo "@bypass_virus_checks_maps = (
-   \%bypass_virus_checks, \@bypass_virus_checks_acl, \$bypass_virus_checks_re);" >> /etc/amavis/conf.d/15-content_filter_mode
-RUN echo "@bypass_spam_checks_maps = (
-   \%bypass_spam_checks, \@bypass_spam_checks_acl, \$bypass_spam_checks_re);" >> /etc/amavis/conf.d/15-content_filter_mode
+RUN echo "@bypass_virus_checks_maps = (\%bypass_virus_checks, \@bypass_virus_checks_acl, \$bypass_virus_checks_re);" >> /etc/amavis/conf.d/15-content_filter_mode
+RUN echo "@bypass_spam_checks_maps = (\%bypass_spam_checks, \@bypass_spam_checks_acl, \$bypass_spam_checks_re);" >> /etc/amavis/conf.d/15-content_filter_mode
 
 WORKDIR /var/www/html
 RUN wget --content-disposition -O - http://sourceforge.net/projects/roundcubemail/files/latest/download | tar xfvz -
