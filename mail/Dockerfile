@@ -48,7 +48,6 @@ COPY postfix-ldap-virtual_group_maps.cf /etc/postfix/postfix-ldap-virtual_group_
 COPY postfix-ldap-aliases.cf /etc/postfix/postfix-ldap-aliases.cf
 
 COPY dovecot.conf /etc/dovecot/dovecot.conf
-COPY dovecot-mysql.conf /etc/dovecot/dovecot-mysql.conf
 COPY dovecot-ldap.conf /etc/dovecot/dovecot-ldap.conf
 COPY config.inc.php /var/www/html/webmail/config/config.inc.php
 
