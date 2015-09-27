@@ -6,9 +6,9 @@ systemctl reload php5-fpm.service
 
 
 # certificate
-openssl req -new -newkey rsa:4096 -sha256 -days 1095 -nodes -x509 -subj "/C=DE/ST=STATE/L=CITY/O=MAIL/CN=`hostname -f`" -keyout /etc/ssl/`hostname -f`.key  -out /etc/ssl/`hostname -f`.cer
+openssl req -new -newkey rsa:4096 -sha256 -days 1095 -nodes -x509 -subj "/C=DE/ST=STATE/L=CITY/O=MAIL/CN=`hostname -f`" -keyout /etc/ssl/`hostname -f`.key  -out /etc/ssl/`hostname -f`.crt
 chmod 600 /etc/ssl/`hostname -f`.key
-cp /etc/ssl/`hostname -f`.cer /usr/local/share/ca-certificates/
+cp /etc/ssl/`hostname -f`.crt /usr/local/share/ca-certificates/
 update-ca-certificates
 
 # config nginx
@@ -29,6 +29,7 @@ chown -R www-data: /var/www/html
 
 # config postfix
 sed -i 's/mail.domain.tld/'"`hostname -f`"'/g' /etc/postfix/main.cf
+postalias /etc/aliases
 
 # config dovecot
 sed -i 's/mail.domain.tld/'"`hostname -f`"'/g' /etc/dovecot/dovecot.conf

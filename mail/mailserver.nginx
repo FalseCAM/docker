@@ -3,7 +3,7 @@ server {
 	listen 443 ssl;
 	listen [::]:443 ssl;
 	ssl on;
-	ssl_certificate         /etc/ssl/mail.domain.tld.cer;
+	ssl_certificate         /etc/ssl/mail.domain.tld.crt;
 	ssl_certificate_key     /etc/ssl/mail.domain.tld.key;
 	# Einige Optionen nach Bettercrypto
 	ssl_prefer_server_ciphers on;
@@ -43,9 +43,5 @@ server {
 		deny all;
 		log_not_found off;
 		access_log off;
-	}
-	location /admin {
-		# Rewrite fix für ViMbAdmin
-		try_files $uri $uri/ /admin/index.php?$args;
 	}
 }
