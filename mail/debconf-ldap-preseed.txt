@@ -1,0 +1,36 @@
+ldap-auth-config    ldap-auth-config/binddn    string    cn=proxyuser,dc=yourdomain,dc=com
+ldap-auth-config    ldap-auth-config/bindpw    password    
+ldap-auth-config    ldap-auth-config/dblogin    boolean    false
+ldap-auth-config    ldap-auth-config/dbrootlogin    boolean    true
+ldap-auth-config    ldap-auth-config/ldapns/base-dn    string    dc=yourdomain,dc=com
+ldap-auth-config    ldap-auth-config/ldapns/ldap-server    string    ldap://10.10.10.10/
+ldap-auth-config    ldap-auth-config/ldapns/ldap_version    select    3
+ldap-auth-config    ldap-auth-config/move-to-debconf    boolean    true
+ldap-auth-config    ldap-auth-config/override    boolean    true
+ldap-auth-config    ldap-auth-config/pam_password    select    crypt
+ldap-auth-config    ldap-auth-config/rootbinddn    string    cn=manager,dc=yourdomain,dc=com
+ldap-auth-config    ldap-auth-config/rootbindpw    password    
+libnss-ldap    libnss-ldap/binddn    string    cn=proxyuser,dc=yourdomain,dc=com
+libnss-ldap    libnss-ldap/bindpw    password    
+libnss-ldap    libnss-ldap/confperm    boolean    false
+libnss-ldap    libnss-ldap/dblogin    boolean    false
+libnss-ldap    libnss-ldap/dbrootlogin    boolean    true
+libnss-ldap    libnss-ldap/nsswitch    note    
+libnss-ldap    libnss-ldap/override    boolean    true
+libnss-ldap    libnss-ldap/rootbinddn    string    cn=manager,dc=yourdomain,dc=com
+libnss-ldap    libnss-ldap/rootbindpw    password    
+libnss-ldap    shared/ldapns/base-dn    string    dc=yourdomain,dc=com
+libnss-ldap    shared/ldapns/ldap-server    string    ldap://10.10.10.10/
+libnss-ldap    shared/ldapns/ldap_version    select    3
+libpam-ldap    libpam-ldap/binddn    string    cn=proxyuser,dc=yourdomain,dc=com
+libpam-ldap    libpam-ldap/bindpw    password    
+libpam-ldap    libpam-ldap/dblogin    boolean    false
+libpam-ldap    libpam-ldap/dbrootlogin    boolean    false
+libpam-ldap    libpam-ldap/override    boolean    true
+libpam-ldap    libpam-ldap/pam_password    select    crypt
+libpam-ldap    libpam-ldap/rootbinddn    string    cn=manager,dc=yourdomain,dc=com
+libpam-ldap    libpam-ldap/rootbindpw    password    
+libpam-ldap    shared/ldapns/base-dn    string    dc=yourdomain,dc=com
+libpam-ldap    shared/ldapns/ldap-server    string    ldap://10.10.10.10/
+libpam-ldap    shared/ldapns/ldap_version    select    3
+libpam-runtime    libpam-runtime/profiles    multiselect    unix, ldap

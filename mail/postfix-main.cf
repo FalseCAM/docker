@@ -17,7 +17,7 @@ append_dot_mydomain = no
 readme_directory = no
 
 # TLS parameters
-smtpd_tls_cert_file=/etc/ssl/mail.domain.tld.cer
+smtpd_tls_cert_file=/etc/ssl/mail.domain.tld.crt
 smtpd_tls_key_file=/etc/ssl/mail.domain.tld.key
 smtpd_use_tls=yes
 smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
@@ -44,7 +44,7 @@ inet_interfaces = all
 
 home_mailbox = Maildir/
 
-virtual_mailbox_base = /var/vmail/
+virtual_mailbox_base = /home/vmail/
 virtual_alias_domains =
 virtual_minimum_uid = 104
 virtual_uid_maps = static:5000

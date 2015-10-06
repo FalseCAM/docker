@@ -18,11 +18,14 @@ RUN echo "postfix postfix/main_mailer_type select No configuration" | debconf-se
 COPY mailserver.nginx /etc/nginx/sites-available/mailserver
 RUN ln -s /etc/nginx/sites-available/mailserver /etc/nginx/sites-enabled/
 
-RUN apt-get install dovecot-common dovecot-core dovecot-imapd dovecot-lmtpd dovecot-managesieved dovecot-sieve dovecot-mysql dovecot-ldap && \
+RUN apt-get -y install dovecot-common dovecot-core dovecot-imapd dovecot-lmtpd dovecot-managesieved dovecot-sieve dovecot-mysql dovecot-ldap && \
 	groupadd -g 5000 vmail && \ 
 	useradd -g vmail -u 5000 vmail -d /var/vmail && \
 	mkdir /var/vmail && \
 	chown -R vmail: /var/vmail/
+RUN maildirmake.dovecot /etc/skel/Maildir && maildirmake.dovecot /etc/skel/Maildir/.Drafts &&\
+	maildirmake.dovecot /etc/skel/Maildir/.Sent && maildirmake.dovecot /etc/skel/Maildir/.Trash &&\
+	maildirmake.dovecot /etc/skel/Maildir/.Templates
 
 RUN echo "@bypass_virus_checks_maps = (\%bypass_virus_checks, \@bypass_virus_checks_acl, \$bypass_virus_checks_re);" >> /etc/amavis/conf.d/15-content_filter_mode
 RUN echo "@bypass_spam_checks_maps = (\%bypass_spam_checks, \@bypass_spam_checks_acl, \$bypass_spam_checks_re);" >> /etc/amavis/conf.d/15-content_filter_mode
@@ -31,6 +34,10 @@ RUN freshclam
 WORKDIR /var/www/html
 RUN wget --content-disposition -O - http://sourceforge.net/projects/roundcubemail/files/latest/download | tar xfvz -
 RUN mv roundcubemail-* webmail
+
+COPY debconf-ldap-preseed.txt /debconf-ldap-preseed.txt
+RUN cat /debconf-ldap-preseed.txt | debconf-set-selections && apt-get -y install libnss-ldap libpam-ldap
+RUN echo -e 'session required\t\t\tpam_mkhomedir.so' >> /etc/pam.d/common-session
 
 VOLUME /etc/postfix
 VOLUME /var/vmail

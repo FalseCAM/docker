@@ -9,5 +9,5 @@ search_base     = OU=People,DC=domain,DC=tld
 scope           = sub
 query_filter    = (&(mail=%s)(objectclass=posixAccount))
 result_attribute= mail
-result_format   = %d/%u/Maildir/
+result_format   = %u/Maildir/
 debuglevel      = 0
