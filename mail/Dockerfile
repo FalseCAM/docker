@@ -7,7 +7,8 @@ RUN apt-get update
 RUN apt-get -y install debconf-utils rsyslog nginx-full php-auth-sasl php-http-request php-mail \
 	php-mail-mime php-mail-mimedecode php-net-dime php-net-smtp php-net-socket php-net-url \
 	php-pear php-soap php5 php5-cli php5-common php5-curl php5-fpm php5-gd php5-imap \
-	php-apc php5-intl php5-mcrypt php5-mysql libawl-php php5-xmlrpc mysql-client ca-certificates \
+	php-apc php5-intl php5-mcrypt php5-mysql
+RUN apt-get -y install libawl-php php5-xmlrpc mysql-client ca-certificates \
 	git curl wget vim openssh-server \
 	clamav clamav-daemon amavisd-new spamassassin \
 	arj bzip2 cabextract cpio file gzip nomarch pax unzip zoo zip
