@@ -43,7 +43,7 @@ RUN /etc/init.d/sshd restart
 RUN useradd -md /home/oc oc
 RUN echo 'root:password' | chpasswd
 RUN echo 'oc:password' | chpasswd
-RUN su - oc -c "mkdir /oc/password/.ssh"
+RUN su - oc -c "mkdir /home/oc/password/.ssh"
 ADD id_rsa /home/oc/.ssh/
 ADD id_rsa.pub /home/oc/.ssh/
 ADD known_hosts /home/oc/.ssh/
