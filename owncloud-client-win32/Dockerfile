@@ -34,25 +34,6 @@ RUN zypper --non-interactive --gpg-auto-import-keys install mingw32-zlib-devel
 
 RUN zypper --non-interactive --gpg-auto-import-keys install git openssh
 
-RUN sed 's/UsePAM yes/UsePAM no/' -i /etc/ssh/sshd_config
-RUN sed 's/#PermitRootLogin yes/PermitRootLogin yes/' -i /etc/ssh/sshd_config
-RUN sed 's/#PermitEmptyPasswords no/PermitEmptyPasswords no/' -i /etc/ssh/sshd_config
+COPY entrypoint.sh /entrypoint.sh
 
-RUN /etc/init.d/sshd restart
-
-RUN useradd -md /home/oc oc
-RUN echo 'root:password' | chpasswd
-RUN echo 'oc:password' | chpasswd
-RUN su - oc -c "mkdir /home/oc/password/.ssh"
-ADD id_rsa /home/oc/.ssh/
-ADD id_rsa.pub /home/oc/.ssh/
-ADD known_hosts /home/oc/.ssh/
-ADD authorized_keys /home/oc/.ssh/
-RUN chown oc:users -R /home/oc/.ssh
-RUN chmod 0700 /home/oc/.ssh && chmod 0600 /home/oc/.ssh/*
-
-RUN sed 's/Defaults *requiretty/#Defaults    requiretty/' -i /etc/sudoers
-RUN echo "oc ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-
-ENTRYPOINT ["/usr/sbin/sshd"]
-CMD ["-D"]
+ENTRYPOINT ["/entrypoint.sh"]
