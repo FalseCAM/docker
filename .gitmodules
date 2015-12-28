@@ -1,0 +1,3 @@
+[submodule "docker-ownCloud-client-win32"]
+	path = docker-ownCloud-client-win32
+	url = https://github.com/danimo/docker-ownCloud-client-win32.git
