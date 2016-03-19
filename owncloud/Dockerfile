@@ -1,7 +1,7 @@
-FROM owncloud 
-RUN apt-get update 
-RUN apt-get install -y php5-ldap
+FROM owncloud:latest
 
-EXPOSE 80
+RUN apt-get update && apt-get install -y libldap2-dev \
+    && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
+    && docker-php-ext-install ldap
 
-ENTRYPOINT ["ls"]
+CMD ["apache2-foreground"]
