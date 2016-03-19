@@ -1,0 +1,63 @@
+mail:
+ build: mail
+ hostname: mail.example.com
+ volumes_from:
+  - maildata
+ links: openldap
+ ports:
+  - "443:443"
+  - "25:25"
+  - "587:587"
+  - "143:143"
+  - "993:993"
+  - "110:110"
+  - "995:995"
+  - "4190:4190"
+
+maildata:
+ build: mail-data
+
+owncloud:
+ build: ownlcoud
+ hostname: owncloud.example.com
+ links:
+  - mysql
+  - postgresql
+ volumes_from:
+  - ownclouddata
+
+ownclouddata:
+ build: owncloud-data
+
+mysql:
+ image: 'mysql:latest'
+ restart: always
+ hostname: 'mysql.example.com'
+ environment:
+  - MYSQL_ROOT_PASSWORD: 'my-secret-pw'
+  - MYSQL_USER: 'example-user'
+  - MYSQL_PASSWORD: 'my-secret-pw'
+  - MYSQL_DATABASE: 'example-database'
+ ports:
+  - '3306:3306'
+ volumes_from:
+  - mysqldata
+
+mysqldata:
+ build: mysql-data
+
+postgresql:
+ image: 'postgresql:latest'
+ restart: always
+ hostname: 'postgresql.example.com'
+ environment:
+  - POSTGRES_PASSWORD: 'my-secret-pw'
+  - POSTGRES_USER: 'example-user'
+  - POSTGRES_DB: 'example-database'
+ ports:
+  - '5432:5432'
+ volumes_from:
+  - postgresqldata
+
+postgresqldata:
+ build: postgresql-data
