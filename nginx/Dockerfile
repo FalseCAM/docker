@@ -1,7 +1,10 @@
 FROM centos:centos7
 RUN yum -y update; yum clean all
 RUN yum -y install http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm; yum -y makecache
-RUN yum -y install nginx-1.8.0
+RUN yum -y install nginx-1.8.0 git epel-release
+RUN git clone http://github.com/letsencrypt/letsencrypt /opt/letsencrypt
+RUN ln -s /opt/letsencrypt/letsencrypt-auto /bin/letsencrypt-auto
+RUN letsencrypt-auto --help
 RUN rm /etc/nginx/conf.d/default.conf
 RUN rm /etc/nginx/conf.d/example_ssl.conf
 
@@ -11,6 +14,7 @@ COPY conf/nginx.conf /etc/nginx/nginx.conf
 
 VOLUME /etc/nginx/conf.d
 VOLUME /etc/nginx/certs
+VOLUME /etc/letsencrypt
 
 EXPOSE 80 443
 CMD ["nginx"]
