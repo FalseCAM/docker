@@ -55,6 +55,21 @@ services:
  ownclouddata:
   build: owncloud-data
 
+ wordpress:
+  image: wordpress
+  domainname: example.com
+  hostname: wordpress
+  restart: always
+  networks:
+   - stdnet
+  environment:
+   - WORDPRESS_DB_HOST=mysql
+   - WORDPRESS_DB_USER=wordpress
+   - WORDPRESS_DB_PASSWORD='my-secret-pw'
+   - WORDPRESS_DB_NAME=wordpress
+#  ports:
+#    - 8080:80
+
  ldapaccountmanager:
   build: ldap-account-manager
   domainname: example.com
