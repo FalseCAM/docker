@@ -55,6 +55,51 @@ services:
  ownclouddata:
   build: owncloud-data
 
+ nextcloud-db:
+    image: mariadb
+    networks:
+     - stdnet
+    restart: always
+    volumes:
+      - /srv/nextcloud/db-data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=foo5678
+
+ nextcloud:
+    image: wonderfall/nextcloud
+    domainname: example.com
+    hostname: nextcloud
+    networks:
+     - stdnet
+    restart: always
+    environment:
+      - UID=1000
+      - GID=1000
+      - UPLOAD_MAX_SIZE=10G
+      - APC_SHM_SIZE=128M
+      - OPCACHE_MEM_SIZE=128
+      - REDIS_MAX_MEMORY=64mb
+      - CRON_PERIOD=15m
+      - TZ=Europe/Berlin
+      - ADMIN_USER=admin
+      - ADMIN_PASSWORD=admin
+      - DB_TYPE=mysql
+      - DB_NAME=nextcloud
+      - DB_USER=nextcloud
+      - DB_PASSWORD=foo5678
+      - DB_HOST=nextcloud-db
+    depends_on:
+      - nextcloud-db
+    volumes:
+      - /srv/nextcloud/data:/data
+      - /srv/nextcloud/config:/config
+      - /srv/nextcloud/apps:/apps2
+#   ports:
+#     - 8888:8888
+
  wordpress:
   image: wordpress
   domainname: example.com
